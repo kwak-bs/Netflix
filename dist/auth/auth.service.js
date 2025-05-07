@@ -19,12 +19,15 @@ const user_entity_1 = require("../user/entity/user.entity");
 const typeorm_2 = require("typeorm");
 const bcrypt = require("bcrypt");
 const config_1 = require("@nestjs/config");
+const jwt_1 = require("@nestjs/jwt");
 let AuthService = class AuthService {
     userRepository;
     configService;
-    constructor(userRepository, configService) {
+    jwtService;
+    constructor(userRepository, configService, jwtService) {
         this.userRepository = userRepository;
         this.configService = configService;
+        this.jwtService = jwtService;
     }
     parseBasicToken(rawToken) {
         const basicSplit = rawToken.split(' ');
@@ -64,12 +67,48 @@ let AuthService = class AuthService {
             }
         });
     }
+    async login(rawToken) {
+        const { email, password } = this.parseBasicToken(rawToken);
+        const user = await this.userRepository.findOne({
+            where: {
+                email
+            }
+        });
+        if (!user) {
+            throw new common_1.BadRequestException('잘못된 로그인 정보입니다!');
+        }
+        const passOk = await bcrypt.compare(password, user.password);
+        if (!passOk) {
+            throw new common_1.BadRequestException('잘못된 로그인 정보입니다!');
+        }
+        const refreshTokenSecret = this.configService.get('REFRESH_TOKEN_SECRET');
+        const accessTokenSecret = this.configService.get('ACCESS_TOKEN_SECRET');
+        return {
+            refreshToken: await this.jwtService.signAsync({
+                sub: user.id,
+                role: user.role,
+                type: 'refresh',
+            }, {
+                secret: refreshTokenSecret,
+                expiresIn: '24h',
+            }),
+            accessToken: await this.jwtService.signAsync({
+                sub: user.id,
+                role: user.role,
+                type: 'access',
+            }, {
+                secret: accessTokenSecret,
+                expiresIn: 300
+            })
+        };
+    }
 };
 exports.AuthService = AuthService;
 exports.AuthService = AuthService = __decorate([
     (0, common_1.Injectable)(),
     __param(0, (0, typeorm_1.InjectRepository)(user_entity_1.User)),
     __metadata("design:paramtypes", [typeorm_2.Repository,
-        config_1.ConfigService])
+        config_1.ConfigService,
+        jwt_1.JwtService])
 ], AuthService);
 //# sourceMappingURL=auth.service.js.map

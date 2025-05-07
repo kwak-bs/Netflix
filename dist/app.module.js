@@ -38,6 +38,8 @@ exports.AppModule = AppModule = __decorate([
                     DB_PASSWORD: Joi.string().required(),
                     DB_DATABASE: Joi.string().required(),
                     HASH_ROUNDS: Joi.number().required(),
+                    ACCESS_TOKEN_SECRET: Joi.string().required(),
+                    REFRESH_TOKEN_SECRET: Joi.string().required(),
                 })
             }),
             movie_module_1.MovieModule,
