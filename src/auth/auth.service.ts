@@ -90,6 +90,8 @@ export class AuthService {
             throw new BadRequestException('잘못된 로그인 정보입니다!');
         }
 
+        // password : 해싱된 값 
+        // user.password : 해싱되지 않은 값
         const passOk = await bcrypt.compare(password, user.password);
 
         if (!passOk) {
