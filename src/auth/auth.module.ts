@@ -4,6 +4,7 @@ import { AuthController } from './auth.controller';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { User } from 'src/user/entity/user.entity';
 import { JwtModule } from '@nestjs/jwt';
+import { LocalStrategy } from './strategy/local.strategy';
 
 @Module({
   imports: [TypeOrmModule.forFeature([
@@ -14,6 +15,7 @@ import { JwtModule } from '@nestjs/jwt';
   })
   ],
   controllers: [AuthController],
-  providers: [AuthService],
+  providers: [AuthService, LocalStrategy],
+  exports: [AuthService] // AuthModule을 import했을때 AuthService도 같이 inject받을 수 있음.
 })
 export class AuthModule { }
