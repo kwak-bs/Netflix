@@ -12,6 +12,7 @@ import { Genre } from './genre/entity/genre.entity';
 import { AuthModule } from './auth/auth.module';
 import { UserModule } from './user/user.module';
 import { User } from './user/entity/user.entity';
+import { envVariablesKeys } from './common/const/env.const';
 
 // IOC 컨테이너에서 모든 애들을 다 인스턴스화 자동으로 해줌.
 // 선언만 해주면됨.
@@ -35,12 +36,12 @@ import { User } from './user/entity/user.entity';
     MovieModule,
     TypeOrmModule.forRootAsync({
       useFactory: (configService: ConfigService) => ({
-        type: configService.get<string>('DB_TYPE') as "postgres",
-        host: configService.get<string>('DB_HOST'),
-        port: configService.get<number>('DB_PORT'),
-        username: configService.get<string>('DB_USERNAME'),
-        password: configService.get<string>('DB_PASSWORD'),
-        database: configService.get<string>('DB_DATABASE'),
+        type: configService.get<string>(envVariablesKeys.dbType) as "postgres",
+        host: configService.get<string>(envVariablesKeys.dbHost),
+        port: configService.get<number>(envVariablesKeys.dbPort),
+        username: configService.get<string>(envVariablesKeys.dbUsername),
+        password: configService.get<string>(envVariablesKeys.dbPassword),
+        database: configService.get<string>(envVariablesKeys.dbDatabase),
         entities: [
           Movie,
           MovieDetail,
