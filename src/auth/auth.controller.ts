@@ -20,17 +20,19 @@ export class AuthController {
   }
 
   @Post('token/access')
-  async rotateAccessToken(@Headers('authorization') token: string) {
-    const payload = await this.authService.parseBearerToken(token, true);
+  // async rotateAccessToken(@Headers('authorization') token: string) {
+  async rotateAccessToken(@Request() req) {
+    //const payload = await this.authService.parseBearerToken(token, true);
 
     return {
-      accessToken: await this.authService.issueToken(payload, false),
+      accessToken: await this.authService.issueToken(req.user, false),
     }
   }
 
   @UseGuards(LocalAuthGuard) // AuthGuard는 localStrategy class를 의미함
   @Post('login/passport')
   async loginUserPassport(@Request() req) {
+
     return {
       refreshToken: await this.authService.issueToken(req.user, true),
       accessToken: await this.authService.issueToken(req.user, false),

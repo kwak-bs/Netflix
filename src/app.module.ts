@@ -13,6 +13,7 @@ import { AuthModule } from './auth/auth.module';
 import { UserModule } from './user/user.module';
 import { User } from './user/entity/user.entity';
 import { envVariablesKeys } from './common/const/env.const';
+import { BearerTokenMiddleware } from './auth/middleware/bearer-token.middleware';
 
 // IOC 컨테이너에서 모든 애들을 다 인스턴스화 자동으로 해줌.
 // 선언만 해주면됨.
@@ -69,4 +70,17 @@ import { envVariablesKeys } from './common/const/env.const';
     // })
   ],
 })
-export class AppModule { }
+export class AppModule implements NestModule {
+  configure(consumer: MiddlewareConsumer) {
+    consumer.apply(
+      BearerTokenMiddleware,
+    ).exclude({
+      path: 'auth/login',
+      method: RequestMethod.POST,
+    }, {
+      path: 'auth/register',
+      method: RequestMethod.POST
+    })
+      .forRoutes('*')
+  }
+}

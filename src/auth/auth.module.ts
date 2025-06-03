@@ -17,6 +17,6 @@ import { JwtStrategy } from './strategy/jwt.strategy';
   ],
   controllers: [AuthController],
   providers: [AuthService, LocalStrategy, JwtStrategy],
-  exports: [AuthService] // AuthModule을 import했을때 AuthService도 같이 inject받을 수 있음.
+  exports: [AuthService, JwtModule] // AuthModule을 import했을때 AuthService도 같이 inject받을 수 있음.
 })
 export class AuthModule { }

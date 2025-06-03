@@ -65,7 +65,9 @@ export class AuthService {
         try {
             // verifyAsync = payload도 가져오는데 검증도 추가로함 
             const payload = await this.jwtService.verifyAsync(token, {
-                secret: this.configService.get<string>(envVariablesKeys.refreshTokenSecret),
+                secret: this.configService.get<string>(
+                    isRefreshToken ? envVariablesKeys.refreshTokenSecret : envVariablesKeys.accessTokenSecret
+                ),
             });
 
             if (isRefreshToken) {
