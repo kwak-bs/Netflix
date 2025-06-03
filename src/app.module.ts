@@ -1,4 +1,4 @@
-import { Module } from '@nestjs/common';
+import { MiddlewareConsumer, Module, NestModule, RequestMethod } from '@nestjs/common';
 import { MovieModule } from './movie/movie.module';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { ConfigModule, ConfigService } from '@nestjs/config';
@@ -14,6 +14,8 @@ import { UserModule } from './user/user.module';
 import { User } from './user/entity/user.entity';
 import { envVariablesKeys } from './common/const/env.const';
 import { BearerTokenMiddleware } from './auth/middleware/bearer-token.middleware';
+import { APP_GUARD } from '@nestjs/core';
+import { AuthGuard } from './auth/guard/auth.guard';
 
 // IOC 컨테이너에서 모든 애들을 다 인스턴스화 자동으로 해줌.
 // 선언만 해주면됨.
@@ -69,6 +71,12 @@ import { BearerTokenMiddleware } from './auth/middleware/bearer-token.middleware
     //   synchronize: true, // 개발할때만 true, production가면 절대로 true로 하면 안됨.
     // })
   ],
+  providers: [
+    {
+      provide: APP_GUARD,
+      useClass: AuthGuard // 프로젝트 전체에 AuthGuard 적용한거임
+    }
+  ]
 })
 export class AppModule implements NestModule {
   configure(consumer: MiddlewareConsumer) {
