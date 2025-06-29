@@ -32,6 +32,7 @@ export class AuthController {
     }
   }
 
+  // passport 공부용. 이 플젝에서는 잘 안쓰임.
   @UseGuards(LocalAuthGuard) // AuthGuard는 localStrategy class를 의미함
   @Post('login/passport')
   async loginUserPassport(@Request() req) {
@@ -42,6 +43,7 @@ export class AuthController {
     };
   }
 
+  // passport 공부용으로 만든거였음. 이 플젝에서는 잘 안쓰일거임 
   @UseGuards(JwtAuthGuard)
   @Get('private')
   async private(@Request() req) {
